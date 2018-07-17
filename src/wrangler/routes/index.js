@@ -4,6 +4,7 @@ const GridFSBucket = mongoDriver.GridFSBucket;
 const server_url = require("../settings").server_url;
 const { makeMongod, getIp, addNode, removeNodes, downloadFile } = require("../src/Wrangler");
 const ReplSet = mongoDriver.ReplSet;  
+const Server = mongoDriver.Server;
 var express = require("express");
 var router = express.Router();
 var request = require('request');
@@ -67,19 +68,22 @@ router.post("/upload", function(req, res, next) {
           const config = {
             '_id': req.body.filename,
             'members': [
-              { '_id': 0, 'host': ip + ":" + port },
+              { '_id': 0, 'host': ip + ":" + port},
             ]
           }
           console.log(typeof db);
 
           console.log(typeof db.admin);
           var adminDb = db.admin();
-          adminDb.command({ replSetInitiate: config }, function(err, conf) {
+          adminDb.command({ replSetInitiate: config }, function(err, info) {
             console.log("err " + err);
-            console.log("conf " + conf);
+            console.log("conf " + JSON.stringify(info));
             var bucket = new GridFSBucket(db);
-
-            fs.createReadStream(req.body.filepath).
+            const replset = new ReplSet([
+              new Server(ip, port)
+            ]);
+            replset.on('open', () => {
+              fs.createReadStream(req.body.filepath).
               pipe(bucket.openUploadStream(req.body.filename)).
               on('error', function(error) {
                 console.log(error)
@@ -102,6 +106,7 @@ router.post("/upload", function(req, res, next) {
                     }
                   });
               });
+            })
           });
         }
       )
