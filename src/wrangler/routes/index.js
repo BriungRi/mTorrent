@@ -28,7 +28,7 @@ router.post("/remove_nodes", function(req, res, next) {
   res.send("ok");
 });
 
-router.get('/download', function(req, res, next) {
+router.post('/download', function(req, res, next) {
   // send request to server to get added to replica set
   getIp(function(ip) {
     makeMongod(req.body.filename, function(port) {
