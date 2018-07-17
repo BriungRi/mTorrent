@@ -2,7 +2,7 @@ const express = require("express");
 var router = express.Router();
 var request = require("request");
 var server_url = require("../settings").server_url;
-var { makeMongod, getIp, addNode } = require("../src/Wrangler");
+var { makeMongod, getIp, addNode, removeNodes } = require("../src/Wrangler");
 
 const router = express.Router();
 /* GET home page. */
@@ -12,11 +12,12 @@ router.get("/", function(req, res, next) {
 
 router.post("/add_node", function(req, res, next) {
   addNode(req.body.filename, req.body.mongo);
+  res.send("OK");
 });
 
 router.post("/remove_nodes", function(req, res, next) {
-  console.log("removing nodes");
-  res.send("ok");
+  removeNodes(req.body.filename);
+  res.send("OK");
 });
 
 router.get("/download", function(req, res, next) {
