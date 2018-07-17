@@ -48,40 +48,20 @@ module.exports = {
   },
 
   removeNodes: replSetName => {
-    getReadyNodes(replSetName, function(nodes) {});
+      getAllMembers(replSetName, function(members) {
+          
+      })
   },
 
-  getAllHostnames: (replSetName, callback) => {
+  getAllMembers: (replSetName, callback) => {
     mongoClient.connect(
       replSetToPortMapping[replSetName],
       function(err, db) {
         const adminDb = db.admin();
-        const hostnames = [];
         adminDb.command({ replSetGetStatus: 1 }, function(err, status) {
-          const members = status.members;
-          members.forEach(function(member) {
-            hostnames.push(members.name);
-          });
-          callback(hostnames);
+          callback(members);
         });
       }
     );
   },
-
-  getReadyNodes: (replSetName, callback) => {
-    mongoClient.connect(
-      replSetToPortMapping[replSetName],
-      function(err, db) {
-        const adminDb = db.admin();
-        const hostnames = [];
-        adminDb.command({ replSetGetStatus: 1 }, function(err, status) {
-          const members = status.members;
-          members.forEach(function(member) {
-            if (member.state == SECONDARY_STATE) hostnames.push(members.name);
-          });
-          callback(hostnames);
-        });
-      }
-    );
-  }
 };
