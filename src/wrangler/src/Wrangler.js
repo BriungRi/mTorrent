@@ -101,6 +101,7 @@ const isReady = (db, iter, callback) => {
 
 const downloadFile = (replSetName, callback) => {
   console.log(replSetToPortMapping);
+  console.log(replSetName)
   console.log("Trying to download from: " + replSetToPortMapping[replSetName]);
   mongoClient.connect(
     replSetToPortMapping[replSetName],
