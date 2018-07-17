@@ -1,4 +1,5 @@
 var express = require("express");
+var portscanner = require("portscanner");
 var router = express.Router();
 var request = require('request');
 var server_url = require('../settings').server_url;
@@ -12,6 +13,7 @@ router.post("/add_node", function(req, res, next) {
   console.log("adding node");
   console.log(req.body);
   console.log(req.body.hi);
+  makeMongod("test3");
   res.send("ok");
 });
 
@@ -40,5 +42,12 @@ router.get('/download', function(req, res, next) {
     }
   })
 });
+
+function makeMongod(filename) {
+  const port = portscanner.findAPortNotInUse(3500, 4001, '127.0.0.1', function(error, port){});
+  console.log(port);
+  exec("./../bin/mongod --port " + port + " --replSet \"" + filename + "\" --bind_ip_all");
+  return port;
+};
 
 module.exports = router;

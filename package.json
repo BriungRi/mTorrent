@@ -15,6 +15,7 @@
     "http-errors": "~1.6.2",
     "mongodb": "^3.1.1",
     "morgan": "~1.9.0",
+    "portscanner": "^2.2.0",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
     "react-dropzone": "^4.2.13",
