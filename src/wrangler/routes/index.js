@@ -1,11 +1,9 @@
 var express = require("express");
-var portscanner = require("portscanner");
 var router = express.Router();
 var request = require('request');
 var server_url = require('../settings').server_url;
-var { makeMongod, getIp, downloadFile } = require('../src/Wrangler');
+var { addNode, removeNodes, makeMongod, getIp, downloadFile } = require('../src/Wrangler');
 const mongoDriver = require('mongodb');
-const MongoClient = mongoDriver.MongoClient;
 const ReplSet = mongoDriver.ReplSet;
 
 /* GET home page. */
@@ -14,18 +12,13 @@ router.get("/", function(req, res, next) {
 });
 
 router.post("/add_node", function(req, res, next) {
-  console.log("adding node");
-  console.log(req.body);
-  console.log(req.body.hi);
-  makeMongod("test3", function(port) {
-    console.log(port)
-  });
-  res.send("ok");
+  addNode(req.body.filename, req.body.mongo);
+  res.send("OK");
 });
 
 router.post("/remove_nodes", function(req, res, next) {
-  console.log("removing nodes");
-  res.send("ok");
+  removeNodes(req.body.filename);
+  res.send("OK");
 });
 
 router.post('/download', function(req, res, next) {
@@ -50,6 +43,7 @@ router.post('/download', function(req, res, next) {
             replSet = new ReplSet(hostnames);
             replSet.on('open', () => {
               downloadFile();
+              res.send("OK");
             })
           });
         }

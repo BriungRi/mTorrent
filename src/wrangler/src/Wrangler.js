@@ -49,7 +49,6 @@ const makeMongod = (filename, callback) => {
     );
   }
 
-
 const removeNodes = replSetName => {
     getAllMembers(replSetName, function(members) {
       const readyMemberNames = new Set([]);
@@ -69,7 +68,7 @@ const removeNodes = replSetName => {
     });
   },
 
-  const getAllMembers = (replSetName, callback) => {
+  getAllMembers = (replSetName, callback) => {
     mongoClient.connect(
       replSetToPortMapping[replSetName],
       function(err, db) {
