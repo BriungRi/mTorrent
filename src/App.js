@@ -20,10 +20,11 @@ class App extends Component {
     console.log(files);
   }
 
+  // TODO: Add reject/accept styles for dropzone
   render() {
     return (
       <div className="App">
-        <Dropzone className="Dropzone" onDrop={this.onDrop} disableClick="true">
+        <Dropzone className="Dropzone" onDrop={this.onDrop} disableClick="true"> 
           <Logo />
           <Upload />
           <List />

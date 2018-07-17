@@ -27,14 +27,22 @@ class List extends Component {
             <td>movie.mp4</td>
             <td>30</td>
             <td className="DownloadElement">
-              <img src={cloud_download} alt="Download" />
+            <img
+                className="DownloadImage"
+                src={cloud_download}
+                alt="Download"
+              />
             </td>
           </tr>
           <tr>
             <td>files.zip</td>
             <td>9</td>
             <td className="DownloadElement">
-              <img src={cloud_download} alt="Download" />
+            <img
+                className="DownloadImage"
+                src={cloud_download}
+                alt="Download"
+              />
             </td>
           </tr>
         </table>
