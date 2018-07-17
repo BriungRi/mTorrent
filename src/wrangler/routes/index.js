@@ -29,7 +29,7 @@ router.post("/remove_nodes", function(req, res, next) {
 router.get('/download', function(req, res, next) {
   // send request to server to get added to replica set
   getIp(function(ip) {
-    makeMongod(function(port) {
+    makeMongod(req.body.filename, function(port) {
       var mongoURL = ip + ":" + port;
       request({
         url: server_url+"/request", 
@@ -44,6 +44,11 @@ router.get('/download', function(req, res, next) {
     
         } else {
           //check until download is finished
+          MongoClient.connect(ip + ":" + port, function(err, client) {
+            client.db.command({"replSetGetStatus":1 },function(err,result) {
+              console.log( result );
+            });
+          });
         }
       })
     })
