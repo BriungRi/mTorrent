@@ -16,11 +16,10 @@ class App extends Component {
 
   onDrop(files) {
     files.forEach(function(file) {
-      console.log('On drop: ' + file.webkitRelativePath);
       unirest
         .post("http://localhost:3001/upload")
         .headers({ "Content-Type": "multipart/form-data" })
-        .attach(file.name, file.webkitRelativePath) // Attachment
+        .attach(file.name, file.path) // Attachment
         .end(function(response) {
           console.log(response.body);
         });
