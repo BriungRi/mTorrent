@@ -8,8 +8,8 @@ import Upload from "./components/Upload.js";
 import "./App.css";
 
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {};
     this.onDrop = this.onDrop.bind(this);
   }
