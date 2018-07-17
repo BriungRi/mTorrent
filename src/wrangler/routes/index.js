@@ -1,10 +1,9 @@
 const express = require("express");
-var router = express.Router();
-var request = require("request");
-var server_url = require("../settings").server_url;
-var { makeMongod, getIp, addNode, removeNodes } = require("../src/Wrangler");
-
 const router = express.Router();
+const request = require("request");
+const server_url = "http://localhost" || require("../settings").server_url;
+const { makeMongod, getIp, addNode, removeNodes } = require("../src/Wrangler");
+
 /* GET home page. */
 router.get("/", function(req, res, next) {
   res.render("index", { title: "Express" });

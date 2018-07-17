@@ -1,3 +1,5 @@
+const unirest = require("unirest");
+
 import React, { Component } from "react";
 import Dropzone from "react-dropzone";
 import Logo from "./components/Logo.js";
@@ -8,23 +10,28 @@ import "./App.css";
 class App extends Component {
   constructor() {
     super();
-    this.state = { files: [] };
-
+    this.state = {};
     this.onDrop = this.onDrop.bind(this);
   }
 
   onDrop(files) {
-    this.setState({
-      files
+    files.forEach(function(file) {
+      console.log('On drop: ' + file.webkitRelativePath);
+      unirest
+        .post("http://localhost:3001/upload")
+        .headers({ "Content-Type": "multipart/form-data" })
+        .attach(file.name, file.webkitRelativePath) // Attachment
+        .end(function(response) {
+          console.log(response.body);
+        });
     });
-    console.log(files);
   }
 
   // TODO: Add reject/accept styles for dropzone
   render() {
     return (
       <div className="App">
-        <Dropzone className="Dropzone" onDrop={this.onDrop} disableClick="true"> 
+        <Dropzone className="Dropzone" onDrop={this.onDrop} disableClick="true">
           <Logo />
           <Upload />
           <List />

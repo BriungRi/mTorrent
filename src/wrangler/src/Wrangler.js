@@ -1,4 +1,5 @@
 const internalIp = require("internal-ip");
+const mongoDriver = require("mongodb");
 const mongoClient = mongoDriver.MongoClient;
 var portscanner = require("portscanner");
 const replSetToPortMapping = {};
