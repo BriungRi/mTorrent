@@ -1,42 +1,30 @@
 const unirest = require("unirest");
 
 import React, { Component } from "react";
+import DownloadImg from "./../components/DownloadImg.js";
 import "./../style/List.css";
-import cloud_download from "./../assets/cloud_download.png";
 
 const configServerURL = require("./../wrangler/settings.js").server_url;
 
 class List extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = { files: [] };
     this.getFiles = this.getFiles.bind(this);
-    this.downloadFile = this.downloadFile.bind(this);
   }
 
   componentDidMount() {
-    this.getFiles();
+    this.timerID = setInterval(() => this.getFiles(), 5000);
   }
 
   getFiles() {
+    let self = this;
     unirest.get(configServerURL + "files").end(function(response) {
-      this.setState({
+      console.log(response.body);
+      self.setState({
         files: response.body
       });
     });
-  }
-
-  downloadFile(filenameToDownload) {
-    unirest
-      .post("http://localhost:3001")
-      .headers({
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      })
-      .send({ filename: filenameToDownload })
-      .end(function(response) {
-        console.log(response.body);
-      });
   }
 
   render() {
@@ -51,19 +39,15 @@ class List extends Component {
     this.state.files.forEach(function(file) {
       rows.push(
         <tr>
-            <td>file._id</td>
-            <td>file.size</td>
-            <td className="DownloadElement">
-              <img
-                className="DownloadImage"
-                src={cloud_download}
-                alt="Download"
-              />
-            </td>
-          </tr>
-      )
-    })
-    return <div>{rows}</div>;
+          <td>{file._id}</td>
+          <td>{file.size}</td>
+          <td className="DownloadElement">
+            <DownloadImg filename={file._id} />
+          </td>
+        </tr>
+      );
+    });
+    return <table className="Table">{rows}</table>;
   }
 }
 
