@@ -2,7 +2,6 @@ const internalIp = require("internal-ip");
 const mongoDriver = require('mongodb');
 const mongoClient = mongoDriver.MongoClient;
 const GridFSBucket = mongoDriver.Grid;
-const replSet = mongoDriver.replSet;
 var portscanner = require("portscanner");
 const replSetToPortMapping = {};
 const SECONDARY_STATE = 2;
@@ -41,7 +40,8 @@ const makeMongod = (filename, callback) => {
         var adminDb = db.admin();
         adminDb.command({ replSetGetConfig: 1 }, function(err, conf) {
           conf.members.push(mongoURL);
-          adminDb.command({ replSetGetConfig: conf }, function(err, info) {
+          adminDb.command({ replSetSetConfig: conf }, function(err, info) {
+            console.log("Adding node");
             console.log(info);
           });
         });
@@ -49,11 +49,25 @@ const makeMongod = (filename, callback) => {
     );
   }
 
-  const removeNodes = replSetName => {
-      getAllMembers(replSetName, function(members) {
-          
-      })
-  }
+
+const removeNodes = replSetName => {
+    getAllMembers(replSetName, function(members) {
+      const readyMemberNames = new Set([]);
+      members.forEach(function(member) {
+        if (member.status == SECONDARY_STATE) readyMemberNames.add(member.name);
+      });
+      getAllMembersByConfig(replSetName, function(members) {
+        const newMembers = [];
+        members.forEach(function(member) {
+          if (!readyMemberNames.has(member.host)) newMembers.push(member);
+        });
+        adminDb.command({ replSetSetConfig: conf }, function(err, info) {
+          console.log("Removing nodes");
+          console.log(info);
+        });
+      });
+    });
+  },
 
   const getAllMembers = (replSetName, callback) => {
     mongoClient.connect(
@@ -102,12 +116,26 @@ const makeMongod = (filename, callback) => {
       )
   }
 
+const getAllMembersByConfig = (replSetName, callback) => {
+    mongoClient.connect(
+      replSetToPortMapping[replSetName],
+      function(err, db) {
+        const adminDb = db.admin();
+        adminDb.command({ replSetGetConfig: 1 }, function(err, config) {
+          callback(config.members);
+        });
+      }
+    );
+  }
 
 module.exports = {
     makeMongod: makeMongod,
     getIp: getIp,
     addNode: addNode,
     removeNodes: removeNodes,
-    downloadFile: downloadFile
+    downloadFile: downloadFile,
+    getAllMembersByConfig: getAllMembersByConfig
 }
+
+
 

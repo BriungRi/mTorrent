@@ -45,7 +45,6 @@ router.get('/download', function(req, res, next) {
         if (err) {
     
         } else {
-          //check until download is finished
           getAllMembers(req.body.filename, function(list) {
             hostnames = list.map(x => x.name);
             replSet = new ReplSet(hostnames);
