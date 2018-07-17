@@ -1,10 +1,10 @@
-const express = require("express");
-const router = express.Router();
-const request = require("request");
 const mongoDriver = require("mongodb");
 const mongoClient = mongoDriver.MongoClient;
 const server_url = "http://localhost" || require("../settings").server_url;
-const { makeMongod, getIp, addNode, removeNodes } = require("../src/Wrangler");
+const { makeMongod, getIp, addNode, removeNodes, downloadFile, getAllMembersByConfig } = require("../src/Wrangler");  
+var express = require("express");
+var router = express.Router();
+var request = require('request');
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -12,39 +12,48 @@ router.get("/", function(req, res, next) {
 });
 
 router.post("/add_node", function(req, res, next) {
-  addNode(req.body.filename, req.body.mongo);
-  res.send("OK");
+  console.log("adding node");
+  console.log(req.body);
+  console.log(req.body.hi);
+  makeMongod("test3", function(port) {
+    console.log(port)
+  });
+  res.send("ok");
 });
 
 router.post("/remove_nodes", function(req, res, next) {
-  removeNodes(req.body.filename);
-  res.send("OK");
+  console.log("removing nodes");
+  res.send("ok");
 });
 
-router.get("/download", function(req, res, next) {
+router.post('/download', function(req, res, next) {
   // send request to server to get added to replica set
   getIp(function(ip) {
-    makeMongod(function(port) {
+    makeMongod(req.body.filename, function(port) {
       var mongoURL = ip + ":" + port;
-      request(
-        {
-          url: server_url + "/request",
-          method: "POST",
-          json: true,
-          body: {
-            filename: req.body.filename,
-            body: mongoURL
-          }
-        },
-        function(err, response) {
-          if (err) {
-          } else {
-            //check until download is finished
-          }
+      request({
+        url: server_url+"/request", 
+        method: 'POST',
+        json: true,
+        body: {
+          filename: req.body.filename,
+          body: mongoURL
         }
-      );
-    });
-  });
+      }, function(err, response) {
+        if (err) {
+    
+        } else {
+          getAllMembers(req.body.filename, function(list) {
+            hostnames = list.map(x => x.name);
+            replSet = new ReplSet(hostnames);
+            replSet.on('open', () => {
+              downloadFile();
+            })
+          });
+        }
+      });
+    })
+  })
 });
 
 router.post("/upload", function(req, res, next) {
