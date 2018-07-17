@@ -1,6 +1,5 @@
 const internalIp = require("internal-ip");
 const mongoClient = mongoDriver.MongoClient;
-const replSet = mongoDriver.replSet;
 var portscanner = require("portscanner");
 const replSetToPortMapping = {};
 const SECONDARY_STATE = 2;
@@ -39,7 +38,8 @@ module.exports = {
         var adminDb = db.admin();
         adminDb.command({ replSetGetConfig: 1 }, function(err, conf) {
           conf.members.push(mongoURL);
-          adminDb.command({ replSetGetConfig: conf }, function(err, info) {
+          adminDb.command({ replSetSetConfig: conf }, function(err, info) {
+            console.log("Adding node");
             console.log(info);
           });
         });
@@ -48,9 +48,22 @@ module.exports = {
   },
 
   removeNodes: replSetName => {
-      getAllMembers(replSetName, function(members) {
-          
-      })
+    getAllMembers(replSetName, function(members) {
+      const readyMemberNames = new Set([]);
+      members.forEach(function(member) {
+        if (member.status == SECONDARY_STATE) readyMemberNames.add(member.name);
+      });
+      getAllMembersByConfig(replSetName, function(members) {
+        const newMembers = [];
+        members.forEach(function(member) {
+          if (!readyMemberNames.has(member.host)) newMembers.push(member);
+        });
+        adminDb.command({ replSetSetConfig: conf }, function(err, info) {
+          console.log("Removing nodes");
+          console.log(info);
+        });
+      });
+    });
   },
 
   getAllMembers: (replSetName, callback) => {
@@ -64,4 +77,16 @@ module.exports = {
       }
     );
   },
+
+  getAllMembersByConfig: (replSetName, callback) => {
+    mongoClient.connect(
+      replSetToPortMapping[replSetName],
+      function(err, db) {
+        const adminDb = db.admin();
+        adminDb.command({ replSetGetConfig: 1 }, function(err, config) {
+          callback(config.members);
+        });
+      }
+    );
+  }
 };
