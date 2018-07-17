@@ -2,6 +2,7 @@ const internalIp = require("internal-ip");
 const mongoDriver = require("mongodb");
 const mongoClient = mongoDriver.MongoClient;
 var portscanner = require("portscanner");
+var exec = require("child_process").exec;
 const replSetToPortMapping = {};
 const SECONDARY_STATE = 2;
 
