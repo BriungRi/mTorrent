@@ -4,6 +4,7 @@ const mongoClient = mongoDriver.MongoClient;
 const replSet = mongoDriver.replSet;
 var portscanner = require("portscanner");
 const replSetToPortMapping = {};
+const SECONDARY_STATE = 2;
 
 module.exports = {
   makeMongod: (filename, callback) => {
@@ -33,11 +34,8 @@ module.exports = {
   },
 
   addNode: (replSetName, mongoURL) => {
-    const dbName = "admin";
-    const collectionName = "file";
-
     mongoClient.connect(
-      replSetName,
+      replSetToPortMapping[replSetName],
       function(err, db) {
         var adminDb = db.admin();
         adminDb.command({ replSetGetConfig: 1 }, function(err, conf) {
@@ -50,7 +48,41 @@ module.exports = {
     );
   },
 
-  getServerList: (host, callback) => {
+  removeNodes: replSetName => {
+    getReadyNodes(replSetName, function(nodes) {});
+  },
 
+  getAllHostnames: (replSetName, callback) => {
+    mongoClient.connect(
+      replSetToPortMapping[replSetName],
+      function(err, db) {
+        const adminDb = db.admin();
+        const hostnames = [];
+        adminDb.command({ replSetGetStatus: 1 }, function(err, status) {
+          const members = status.members;
+          members.forEach(function(member) {
+            hostnames.push(members.name);
+          });
+          callback(hostnames);
+        });
+      }
+    );
+  },
+
+  getReadyNodes: (replSetName, callback) => {
+    mongoClient.connect(
+      replSetToPortMapping[replSetName],
+      function(err, db) {
+        const adminDb = db.admin();
+        const hostnames = [];
+        adminDb.command({ replSetGetStatus: 1 }, function(err, status) {
+          const members = status.members;
+          members.forEach(function(member) {
+            if (member.state == SECONDARY_STATE) hostnames.push(members.name);
+          });
+          callback(hostnames);
+        });
+      }
+    );
   }
 };
