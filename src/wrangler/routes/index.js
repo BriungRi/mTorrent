@@ -3,8 +3,10 @@ var portscanner = require("portscanner");
 var router = express.Router();
 var request = require('request');
 var server_url = require('../settings').server_url;
-var { makeMongod, getIp } = require('../src/Wrangler');
-const MongoClient = require('mongodb').MongoClient;
+var { makeMongod, getIp, downloadFile } = require('../src/Wrangler');
+const mongoDriver = require('mongodb');
+const MongoClient = mongoDriver.MongoClient;
+const ReplSet = mongoDriver.ReplSet;
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -44,13 +46,15 @@ router.get('/download', function(req, res, next) {
     
         } else {
           //check until download is finished
-          MongoClient.connect(ip + ":" + port, function(err, client) {
-            client.db.command({"replSetGetStatus":1 },function(err,result) {
-              console.log( result );
-            });
+          getAllMembers(req.body.filename, function(list) {
+            hostnames = list.map(x => x.name);
+            replSet = new ReplSet(hostnames);
+            replSet.on('open', () => {
+              downloadFile();
+            })
           });
         }
-      })
+      });
     })
   })
 });
