@@ -1,10 +1,13 @@
 const mongoDriver = require("mongodb");
 const mongoClient = mongoDriver.MongoClient;
-const server_url = "http://localhost" || require("../settings").server_url;
-const { makeMongod, getIp, addNode, removeNodes, downloadFile, getAllMembersByConfig } = require("../src/Wrangler");  
+const GridFSBucket = mongoDriver.GridFSBucket;
+const server_url = require("../settings").server_url;
+const { makeMongod, getIp, addNode, removeNodes, downloadFile } = require("../src/Wrangler");
+const ReplSet = mongoDriver.ReplSet;  
 var express = require("express");
 var router = express.Router();
 var request = require('request');
+const fs = require('fs')
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -12,18 +15,13 @@ router.get("/", function(req, res, next) {
 });
 
 router.post("/add_node", function(req, res, next) {
-  console.log("adding node");
-  console.log(req.body);
-  console.log(req.body.hi);
-  makeMongod("test3", function(port) {
-    console.log(port)
-  });
-  res.send("ok");
+  addNode(req.body.filename, req.body.mongo);
+  res.send("OK");
 });
 
 router.post("/remove_nodes", function(req, res, next) {
-  console.log("removing nodes");
-  res.send("ok");
+  removeNodes(req.body.filename);
+  res.send("OK");
 });
 
 router.post('/download', function(req, res, next) {
@@ -48,6 +46,7 @@ router.post('/download', function(req, res, next) {
             replSet = new ReplSet(hostnames);
             replSet.on('open', () => {
               downloadFile();
+              res.send("OK");
             })
           });
         }
@@ -59,23 +58,31 @@ router.post('/download', function(req, res, next) {
 router.post("/upload", function(req, res, next) {
   // Start a mongod
   getIp(function(ip) {
-    makeMongod(function(port) {
-      mongoClient.connect(replSetToPortMapping[replSetName],
-        function(err, db) {
+    makeMongod(req.body.filename, function(port) {
+      console.log(ip +":"+ port);
+      mongoClient.connect("mongodb://" + ip + ":" + port, 
+        function(err, client) {
+          const db = client.db();
+          console.log(err);
           const config = {
             '_id': req.body.filename,
             'members': [
               { '_id': 0, 'host': ip + ":" + port },
             ]
           }
+          console.log(typeof db);
+
+          console.log(typeof db.admin);
           var adminDb = db.admin();
           adminDb.command({ replSetInitiate: config }, function(err, conf) {
-            var bucket = new mongodb.GridFSBucket(db);
+            console.log("err " + err);
+            console.log("conf " + conf);
+            var bucket = new GridFSBucket(db);
 
             fs.createReadStream(req.body.filepath).
               pipe(bucket.openUploadStream(req.body.filename)).
               on('error', function(error) {
-                assert.ifError(error);
+                console.log(error)
               }).
               on('finish', function() {
                 console.log('done!');

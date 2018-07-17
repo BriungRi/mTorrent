@@ -18,8 +18,14 @@ class App extends Component {
     files.forEach(function(file) {
       unirest
         .post("http://localhost:3001/upload")
-        .headers({ "Content-Type": "multipart/form-data" })
-        .attach(file.name, file.path) // Attachment
+        .headers({
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        })
+        .send({
+          filename: file.name,
+          filepath: file.path
+        })
         .end(function(response) {
           console.log(response.body);
         });
@@ -30,7 +36,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Dropzone className="Dropzone" onDrop={this.onDrop} disableClick="true">
+        <Dropzone className="Dropzone" onDrop={this.onDrop} disableClick={true}>
           <Logo />
           <Upload />
           <List />

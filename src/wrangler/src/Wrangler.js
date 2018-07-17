@@ -1,7 +1,7 @@
 const internalIp = require("internal-ip");
 const mongoDriver = require('mongodb');
 const mongoClient = mongoDriver.MongoClient;
-const GridFSBucket = mongoDriver.Grid;
+const GridFSBucket = mongoDriver.GridFSBucket;
 var portscanner = require("portscanner");
 var exec = require("child_process").exec;
 const replSetToPortMapping = {};
@@ -9,21 +9,26 @@ const SECONDARY_STATE = 2;
 var fs = require('fs')
 
 const makeMongod = (filename, callback) => {
-    const port = portscanner.findAPortNotInUse(
+    portscanner.findAPortNotInUse(
       3500,
       4001,
       "127.0.0.1",
       function(error, port) {
-        console.log(port);
-        exec(
-          "./../bin/mongod --port " +
-            port +
-            ' --replSet "' +
-            filename +
-            '" --bind_ip_all'
-        );
-        replSetToPortMapping.filename = port;
-        callback(port);
+        exec("mkdir -p ~/.data/torr/" + port, (error, stdout, stderr) => {  
+            exec(
+                'src/bin/mongod --port ' +
+                  port +
+                  ' --replSet "' +
+                  filename +
+                  '" --bind_ip_all' +
+                  ' --dbpath ' +
+                  '~/.data/torr/' + port + ' --logpath ~/.data/torr/' + port + '.log --fork', 
+                  (error1, stdout1, stderr1) => {
+                    replSetToPortMapping.filename = port;
+                    callback(port);
+                  }
+            );
+        })
       }
     );
   }
@@ -50,7 +55,6 @@ const makeMongod = (filename, callback) => {
     );
   }
 
-
 const removeNodes = replSetName => {
     getAllMembers(replSetName, function(members) {
       const readyMemberNames = new Set([]);
@@ -70,7 +74,7 @@ const removeNodes = replSetName => {
     });
   },
 
-  const getAllMembers = (replSetName, callback) => {
+  getAllMembers = (replSetName, callback) => {
     mongoClient.connect(
       replSetToPortMapping[replSetName],
       function(err, db) {
