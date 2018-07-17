@@ -14,6 +14,7 @@ class List extends Component {
   }
 
   componentDidMount() {
+    this.getFiles();
     this.timerID = setInterval(() => this.getFiles(), 5000);
   }
 
