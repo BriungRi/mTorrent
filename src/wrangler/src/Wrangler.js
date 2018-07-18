@@ -97,6 +97,8 @@ const removeNodes = replSetName => {
 const isReady = (db, iter, callback) => {
   const adminDb = db.admin();
   adminDb.command({ replSetGetStatus: 1 }, function(err, status) {
+    console.log(iter)
+    console.log(err)
     if (status.myState == SECONDARY_STATE) {
       callback();
     } else {
@@ -118,11 +120,11 @@ const downloadFile = (replSetName, callback) => {
         bucketName: "songs"
       });
       var iter = 200;
-      isReady(db, iter, function() {
+      setTimeout(isReady, 5000, db, iter, function() {
         bucket
-          .openDownloadStreamByName(filename)
+          .openDownloadStreamByName(replSetName)
           .start(0)
-          .pipe(fs.createWriteStream("~/Downloads/" + filename))
+          .pipe(fs.createWriteStream("~/Downloads/" + replSetName))
           .on("error", () => {
             console.log("error");
           })

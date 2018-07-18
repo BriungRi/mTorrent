@@ -53,7 +53,7 @@ router.post("/download", function(req, res, next) {
             response.send(":(");
           } else {
             downloadFile(req.body.filename);
-            response.send("OK");
+            res.send("OK");
           }
         }
       );
