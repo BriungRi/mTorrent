@@ -114,7 +114,8 @@ const isReady = (db, iter, callback) => {
 
 const downloadFile = (replSetName, callback) => {
   const options = {
-    readPreference: ReadPreference.NEAREST
+    readPreference: ReadPreference.NEAREST,
+    slaveOk: true
   };
   mongoClient.connect(
     "mongodb://" + replSetToPortMapping[replSetName],
