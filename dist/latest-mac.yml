@@ -1,10 +1,10 @@
-version: 0.1.0
+version: 0.2.0
 files:
-  - url: mTorrent-0.1.0-mac.zip
-    sha512: xKE4pa55LzMsTSNCO7dJ4HPHtWEf1yaXEESklR+77bwCmXDX7TGNZ07UB3k4189YP2NL33vT+8XkustiOBvqwg==
-  - url: mTorrent-0.1.0.dmg
-    sha512: lRXHloL59pdfYgpZ6GBom/yCjb1k3uWtciSrhPER5wE0S5kMTfOQn/3yocbuci/lgUW0stSVeHPNkfjzMFhXXQ==
-    size: 54202065
-path: mTorrent-0.1.0-mac.zip
-sha512: xKE4pa55LzMsTSNCO7dJ4HPHtWEf1yaXEESklR+77bwCmXDX7TGNZ07UB3k4189YP2NL33vT+8XkustiOBvqwg==
-releaseDate: '2018-07-18T03:51:22.564Z'
+  - url: mTorrent-0.2.0-mac.zip
+    sha512: tzw8Zu2ZxsAPwZIvw3gX7l5cXr3XmtR37rM+Pn9yF9CDZn2FaUD5URtcZ294+gnyoQ78TMXYJ8EexX8Fso3f1g==
+  - url: mTorrent-0.2.0.dmg
+    sha512: txyjJiRbX3kXtNrX/9zAvXBEnBnkCoO40VBm24H8D3UVvuj+Ylhzjd+2KI8WJnAd1gV1HH+X+Upq11Wc3Pffyw==
+    size: 70729234
+path: mTorrent-0.2.0-mac.zip
+sha512: tzw8Zu2ZxsAPwZIvw3gX7l5cXr3XmtR37rM+Pn9yF9CDZn2FaUD5URtcZ294+gnyoQ78TMXYJ8EexX8Fso3f1g==
+releaseDate: '2018-07-18T16:28:42.634Z'

@@ -3,7 +3,7 @@
 <plist version="1.0">
   <dict>
     <key>BuildMachineOSBuild</key>
-    <string>16G1314</string>
+    <string>16G1510</string>
     <key>CFBundleIdentifier</key>
     <string>com.mongodb.mtorrent.helper</string>
     <key>CFBundleName</key>
@@ -27,6 +27,6 @@
     <key>CFBundleDisplayName</key>
     <string>mTorrent Helper</string>
     <key>CFBundleVersion</key>
-    <string>0.1.0</string>
+    <string>0.2.0</string>
   </dict>
 </plist>

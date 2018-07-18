@@ -1,13 +1,16 @@
 {
   "name": "mTorrent",
-  "description": "P2P File Sharing using MongoD",
-  "version": "0.1.0",
-  "author": "Aditya, Brian, Nathan",
+  "author": "Aditya S, Brian L, Nathan L",
+  "description": "P2P File Sharing over MongoDB replication",
+  "version": "0.2.0",
+  "private": true,
+  "main": "public/electron.js",
+  "homepage": "./",
   "build": {
     "appId": "com.mongodb.mtorrent",
-    "mac": {
-      "category": "utilities"
-    },
+    "asarUnpack": [
+      "**/node_modules/mongo/*"
+    ],
     "files": [
       "build/**/*",
       "node_modules/**/*"
@@ -16,40 +19,41 @@
       "buildResources": "assets"
     }
   },
-  "devDependencies": {
-    "electron": "^1.7.9",
-    "electron-builder": "^20.22.0",
-    "foreman": "^2.0.0",
-    "react-scripts": "0.8.5"
-  },
   "dependencies": {
+    "asar": "^0.14.3",
     "cookie-parser": "~1.4.3",
+    "cross-env": "^5.2.0",
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
+    "electron-is-dev": "^0.3.0",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "internal-ip": "^3.0.1",
     "mongodb": "^3.1.1",
+    "mongodb-prebuilt": "^6.3.6",
     "morgan": "~1.9.0",
     "portscanner": "^2.2.0",
-    "react": "^16.1.1",
-    "react-dom": "^16.1.1",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
     "react-dropzone": "^4.2.13",
+    "react-scripts": "1.1.4",
     "request": "^2.87.0",
     "unirest": "^0.5.1"
   },
-  "homepage": "./",
-  "main": "src/electron-starter.js",
   "scripts": {
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "electron-pack": "build --mac",
-    "preelectron-pack": "yarn build",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "electron": "electron .",
-    "dev": "nf start -p 3000"
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "react-test": "react-scripts test --env=jsdom",
+    "react-eject": "react-scripts eject",
+    "electron-build": "electron-builder",
+    "release": "yarn react-build && electron-builder --publish=always",
+    "build": "yarn react-build && yarn electron-build",
+    "start": "concurrently \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electron .\""
+  },
+  "devDependencies": {
+    "concurrently": "^3.6.0",
+    "electron": "^2.0.5",
+    "electron-builder": "^20.22.0",
+    "wait-on": "^2.1.0"
   }
 }
