@@ -20,11 +20,14 @@ class List extends Component {
 
   getFiles() {
     let self = this;
-    unirest.get(configServerURL + "files").end(function(response) {
-      console.log(response.body);
-      self.setState({
-        files: response.body
-      });
+    unirest.get(configServerURL + "files").end(function(res) {
+      if (res.error) {
+        console.log(res.error.message);
+      } else {
+        self.setState({
+          files: res.body
+        });
+      }
     });
   }
 
