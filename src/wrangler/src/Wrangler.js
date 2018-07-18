@@ -1,6 +1,7 @@
 const internalIp = require("internal-ip");
 const mongoDriver = require("mongodb");
 const mongoClient = mongoDriver.MongoClient;
+const ReadPreference = mongoDriver.ReadPreference;
 const GridFSBucket = mongoDriver.GridFSBucket;
 var portscanner = require("portscanner");
 var exec = require("child_process").exec;
@@ -43,19 +44,23 @@ const getIp = callback => {
 };
 
 const addNode = (replSetName, mongoURL) => {
-  console.log(replSetToPortMapping);
-  console.log(replSetName);
-  console.log(replSetToPortMapping[replSetName]);
   mongoClient.connect(
     "mongodb://" + replSetToPortMapping[replSetName],
-    function(err, db) {
-      if(err) {
+    function(err, client) {
+      if (err) {
         console.log(err);
       }
+      const db = client.db();
       var adminDb = db.admin();
-      adminDb.command({ replSetGetConfig: 1 }, function(err, conf) {
-        conf.members.push(mongoURL);
-        adminDb.command({ replSetSetConfig: conf }, function(err, info) {
+      adminDb.command({ replSetGetConfig: 1 }, function(err, res) {
+        const conf = res.config;
+        conf.version = conf.version + 1;
+        console.log(conf);
+        conf.members.push({ _id: conf.members.length, host: mongoURL });
+        adminDb.command({ replSetReconfig: conf }, function(err, info) {
+          if (err) {
+            console.log(err);
+          }
           console.log("Adding node");
           console.log(info);
         });
@@ -106,11 +111,12 @@ const isReady = (db, iter, callback) => {
 };
 
 const downloadFile = (replSetName, callback) => {
-  console.log(replSetToPortMapping);
-  console.log(replSetName)
-  console.log("Trying to download from: " + replSetToPortMapping[replSetName]);
+  const options = {
+    readPreference: ReadPreference.NEAREST
+  };
   mongoClient.connect(
     "mongodb://" + replSetToPortMapping[replSetName],
+    options,
     function(err, client) {
       const db = client.db();
       var bucket = new GridFSBucket(db, {
