@@ -1,9 +1,24 @@
 {
   "name": "mTorrent",
+  "description": "P2P File Sharing using MongoD",
   "version": "0.1.0",
-  "private": true,
+  "author": "Aditya, Brian, Nathan",
+  "build": {
+    "appId": "com.mongodb.mtorrent",
+    "mac": {
+      "category": "utilities"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
   "devDependencies": {
     "electron": "^1.7.9",
+    "electron-builder": "^20.22.0",
     "foreman": "^2.0.0",
     "react-scripts": "0.8.5"
   },
@@ -26,6 +41,10 @@
   "homepage": "./",
   "main": "src/electron-starter.js",
   "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "electron-pack": "build --mac",
+    "preelectron-pack": "yarn build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",

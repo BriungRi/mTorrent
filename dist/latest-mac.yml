@@ -1,0 +1,10 @@
+version: 0.1.0
+files:
+  - url: mTorrent-0.1.0-mac.zip
+    sha512: xKE4pa55LzMsTSNCO7dJ4HPHtWEf1yaXEESklR+77bwCmXDX7TGNZ07UB3k4189YP2NL33vT+8XkustiOBvqwg==
+  - url: mTorrent-0.1.0.dmg
+    sha512: lRXHloL59pdfYgpZ6GBom/yCjb1k3uWtciSrhPER5wE0S5kMTfOQn/3yocbuci/lgUW0stSVeHPNkfjzMFhXXQ==
+    size: 54202065
+path: mTorrent-0.1.0-mac.zip
+sha512: xKE4pa55LzMsTSNCO7dJ4HPHtWEf1yaXEESklR+77bwCmXDX7TGNZ07UB3k4189YP2NL33vT+8XkustiOBvqwg==
+releaseDate: '2018-07-18T03:51:22.564Z'
