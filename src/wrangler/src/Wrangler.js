@@ -47,7 +47,7 @@ const addNode = (replSetName, mongoURL) => {
   console.log(replSetName);
   console.log(replSetToPortMapping[replSetName]);
   mongoClient.connect(
-    replSetToPortMapping[replSetName],
+    "mongodb://" + replSetToPortMapping[replSetName],
     function(err, db) {
       if(err) {
         console.log(err);
@@ -84,7 +84,7 @@ const removeNodes = replSetName => {
   },
   getAllMembers = (replSetName, callback) => {
     mongoClient.connect(
-      replSetToPortMapping[replSetName],
+      "mongodb://" + replSetToPortMapping[replSetName],
       function(err, db) {
         const adminDb = db.admin();
         adminDb.command({ replSetGetStatus: 1 }, function(err, status) {
@@ -110,7 +110,7 @@ const downloadFile = (replSetName, callback) => {
   console.log(replSetName)
   console.log("Trying to download from: " + replSetToPortMapping[replSetName]);
   mongoClient.connect(
-    replSetToPortMapping[replSetName],
+    "mongodb://" + replSetToPortMapping[replSetName],
     function(err, client) {
       const db = client.db();
       var bucket = new GridFSBucket(db, {
@@ -137,7 +137,7 @@ const downloadFile = (replSetName, callback) => {
 
 const getAllMembersByConfig = (replSetName, callback) => {
   mongoClient.connect(
-    replSetToPortMapping[replSetName],
+    "mongodb://" + replSetToPortMapping[replSetName],
     function(err, db) {
       const adminDb = db.admin();
       adminDb.command({ replSetGetConfig: 1 }, function(err, config) {
