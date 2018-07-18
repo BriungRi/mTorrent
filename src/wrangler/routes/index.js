@@ -23,6 +23,7 @@ router.get("/", function(req, res, next) {
 });
 
 router.post("/add_node", function(req, res, next) {
+  console.log("/add_node");
   addNode(req.body.filename, req.body.mongo);
   res.send("OK");
 });

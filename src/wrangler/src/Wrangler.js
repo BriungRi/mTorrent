@@ -43,9 +43,15 @@ const getIp = callback => {
 };
 
 const addNode = (replSetName, mongoURL) => {
+  console.log(replSetToPortMapping);
+  console.log(replSetName);
+  console.log(replSetToPortMapping[replSetName]);
   mongoClient.connect(
     replSetToPortMapping[replSetName],
     function(err, db) {
+      if(err) {
+        console.log(err);
+      }
       var adminDb = db.admin();
       adminDb.command({ replSetGetConfig: 1 }, function(err, conf) {
         conf.members.push(mongoURL);
