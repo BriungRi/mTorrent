@@ -1,0 +1,27 @@
+.Table {
+    width: 100%;
+}
+
+.FilenameHeader {
+    width: 75%;
+}
+
+.SeedHeader {
+    width: 22.5%;
+}
+
+.DownloadHeader {
+    width: 2.5%;
+}
+
+.DownloadElement {
+    text-align: center;
+}
+
+table, th, td {
+    border: 1px solid white;
+}
+
+th {
+    text-align: left;
+}

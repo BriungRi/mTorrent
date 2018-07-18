@@ -2,14 +2,14 @@
   "name": "mTorrent",
   "author": "Aditya S, Brian L, Nathan L",
   "description": "P2P File Sharing over MongoDB replication",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "private": true,
   "main": "public/electron.js",
   "homepage": "./",
   "build": {
     "appId": "com.mongodb.mtorrent",
     "asarUnpack": [
-      "**/node_modules/mongo/*"
+      "**/node_modules/mongodb-prebuilt/*"
     ],
     "files": [
       "build/**/*",
