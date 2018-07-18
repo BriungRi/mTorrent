@@ -10,6 +10,7 @@ const SECONDARY_STATE = 2;
 var fs = require("fs");
 const request = require("request");
 const server_url = require("../settings.js").server_url;
+const os = require('os');
 
 const makeMongod = (filename, callback) => {
   portscanner.findAPortNotInUse(3500, 4001, "127.0.0.1", function(error, port) {
@@ -107,7 +108,7 @@ const isReady = (db, iter, callback) => {
     if (status.myState == SECONDARY_STATE) {
       callback();
     } else {
-      setTimeout(isReady(db, iter * 2, callback), iter);
+      setTimeout(isReady, iter, db, iter * 2, callback);
     }
   });
 };
@@ -122,16 +123,13 @@ const downloadFile = (replSetName, callback) => {
     options,
     function(err, client) {
       const db = client.db();
-      var bucket = new GridFSBucket(db, {
-        chunkSizeBytes: 1024,
-        bucketName: "songs"
-      });
+      var bucket = new GridFSBucket(db);
       var iter = 200;
       setTimeout(isReady, 5000, db, iter, function() {
         bucket
           .openDownloadStreamByName(replSetName)
           .start(0)
-          .pipe(fs.createWriteStream("~/Downloads/" + replSetName))
+          .pipe(fs.createWriteStream("/Users/" + os.userInfo().username + "/Downloads/" + replSetName))
           .on("error", () => {
             console.log("error");
           })
