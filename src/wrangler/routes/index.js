@@ -37,7 +37,7 @@ router.post("/download", function(req, res, next) {
   // send request to server to get added to replica set
   getIp(function(ip) {
     makeMongod(req.body.filename, function(port) {
-      var mongoURL = ip + ":" + port;
+      var mongo = ip + ":" + port;
       request(
         {
           url: server_url + "request",
@@ -45,14 +45,14 @@ router.post("/download", function(req, res, next) {
           json: true,
           body: {
             filename: req.body.filename,
-            body: mongoURL
+            mongoURL: mongo
           }
         },
         function(err, response) {
           if (err) {
             response.send(":(");
           } else {
-            downloadFile();
+            downloadFile(req.body.filename);
             response.send("OK");
           }
         }
