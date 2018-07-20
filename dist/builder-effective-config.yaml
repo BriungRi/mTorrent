@@ -1,0 +1,13 @@
+directories:
+  output: dist
+  buildResources: assets
+files:
+  - build/**/*
+  - node_modules/**/*
+extraMetadata:
+  main: build/electron.js
+appId: com.mongodb.mtorrent
+asarUnpack:
+  - '**/node_modules/mongo/*'
+extends: react-cra
+electronVersion: 2.0.5

@@ -25,14 +25,12 @@ class DownloadImg extends Component {
 
   render() {
     return (
-      <a href="#">
-        <img
-          className="DownloadImg"
-          src={cloud_download}
-          alt="Download"
-          onClick={this.downloadFile}
-        />
-      </a>
+      <img
+        className="DownloadImg"
+        src={cloud_download}
+        alt="Download"
+        onClick={this.downloadFile}
+      />
     );
   }
 }

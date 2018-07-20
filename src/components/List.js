@@ -1,10 +1,9 @@
-const unirest = require("unirest");
-
 import React, { Component } from "react";
 import DownloadImg from "./../components/DownloadImg.js";
 import "./../style/List.css";
 
-const configServerURL = require("./../wrangler/settings.js").server_url;
+const unirest = require("unirest");
+const configServerURL = require("./../settings.js").server_url;
 
 class List extends Component {
   constructor(props) {

@@ -1,11 +1,10 @@
-const unirest = require("unirest");
-
 import React, { Component } from "react";
 import Dropzone from "react-dropzone";
 import Logo from "./components/Logo.js";
 import List from "./components/List.js";
 import Upload from "./components/Upload.js";
 import "./App.css";
+const unirest = require("unirest");
 
 class App extends Component {
   constructor(props) {
